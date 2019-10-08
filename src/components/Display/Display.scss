@@ -1,0 +1,33 @@
+.Display {
+    background: #ef5252;
+    background: linear-gradient(-45deg, #ef5252, #f73773);
+    padding: 3rem 1rem;
+    border-radius: 5px 5px 0 0;
+    color: #2c3a47;
+    text-align: center;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    h1 {
+        font-size: 3rem;
+        margin: 0 0 1rem 0;
+        font-weight: 400;
+        color: rgba($color: #2c3a47, $alpha: 0.9);
+    }
+}
+
+@media (max-width: 499px) {
+    .Display {
+        height: 35vh;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .Display h1 {
+        font-size: 3rem;
+        margin: 0;
+    }
+}

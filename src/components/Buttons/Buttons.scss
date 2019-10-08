@@ -1,0 +1,36 @@
+.Buttons {
+    display: flex;
+    width: 100%;
+
+    .container {
+        padding: 1rem;
+        width: 100%;
+        min-height: 100%;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        transition: -webkit-transform 300ms;
+        transition: transform 300ms;
+        transition: transform 300ms, -webkit-transform 300ms;
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+
+        .button {
+            text-align: center;
+            flex: 1 0 21%;
+            padding: 1.5rem 0rem;
+            cursor: pointer;
+            border: 1px solid hsl(230, 30%, 20%);
+            border-radius: 5px;
+            transition: color 400ms, background-color 400ms;
+
+            &:hover {
+                background: #ef5152;
+                color: #090908;
+            }
+        }
+    }
+}

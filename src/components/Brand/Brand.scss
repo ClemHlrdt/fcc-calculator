@@ -1,0 +1,15 @@
+.Brand {
+    font-family: 'Kaushan Script', cursive;
+    font-size: 1.2rem;
+    text-align: center;
+    color: hsl(230, 100%, 90%);
+    margin: 0;
+    padding: 0.5rem 0;
+    cursor: default;
+}
+
+@media (max-width: 499px) {
+    .Brand {
+        height: 5vh;
+    }
+}

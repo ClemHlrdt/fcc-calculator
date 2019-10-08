@@ -1,6 +1,6 @@
 import React from 'react';
 import './Buttons.scss';
-import { updateExpression } from '@babel/types';
+
 
 const Buttons = (props) => {
     return (
@@ -10,7 +10,7 @@ const Buttons = (props) => {
                     <div 
                         id={button.id} 
                         key={button.id}className="button"
-                        onClick={()=> updateExpression()}
+                        onClick={() => props.updateExpr(button.value)}
                         >{button.value}
                     </div>
                 ))}

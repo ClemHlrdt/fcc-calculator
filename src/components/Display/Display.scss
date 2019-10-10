@@ -15,6 +15,10 @@
         margin: 0 0 1rem 0;
         font-weight: 400;
         color: rgba($color: #2c3a47, $alpha: 0.9);
+
+        &.manyDecimals {
+            font-size: 1.5rem;
+        }
     }
 }
 

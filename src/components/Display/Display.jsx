@@ -1,10 +1,12 @@
 import React from 'react';
 import './Display.scss';
 const Display = (props) => {
+    //TODO change font size when we have many decimals
+    let manyDecimals = props.manyDecimals;
     return (
-        <div id="display" className="Display">
-            <h1>{props.total}</h1>
-            <small>{props.expression}</small>
+        <div  className="Display">
+            <h1  className={manyDecimals ? "manyDecimals" : ""}>{props.total}</h1>
+            <small id="display">{props.expression}</small>
         </div>
     );
 }

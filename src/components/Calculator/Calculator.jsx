@@ -3,6 +3,8 @@ import './Calculator.scss';
 import Display from '../Display/Display';
 import Brand from '../Brand/Brand';
 import Buttons from '../Buttons/Buttons';
+/*eslint-disable no-eval */
+
 
 class Calculator extends Component {
     constructor(props) {
@@ -31,8 +33,9 @@ class Calculator extends Component {
         ];
 
         this.state = {
-            total: 0,
-            expression: ''
+            total: "0",
+            expression: '0',
+            manyDecimals: false
 
         }
         this.PLACEHOLDER = 'do your math';
@@ -41,14 +44,13 @@ class Calculator extends Component {
 
     clearDisplay = () => {
         this.setState({
-            total: 0,
-            expression: ''
+            total: "0",
+            expression: '0'
         });
     }
 
-    componentWillMount() {
-        document.addEventListener("keypress", event => {
-            console.log(event.key);
+    componentDidMount() {
+        document.addEventListener("keydown", event => {
             // if key is a number or +, -, . => updateExpression
             if (!isNaN(event.key) || event.key === '+' || event.key === '-' || event.key === '.')
                 this.updateExpression(event.key);
@@ -64,41 +66,49 @@ class Calculator extends Component {
     }
 
     undo = (currentExpression) => {
-        // if currentExpression is equal to the total, return currentExpression
-        if (currentExpression === String(this.state.total)) return currentExpression;
-        // else, if the length of the current expression is above 1 and it is not equal to the placeholder
-        return currentExpression.length > 1 && currentExpression !== this.PLACEHOLDER
+        return currentExpression.length > 0 && currentExpression !== this.PLACEHOLDER
             ? currentExpression.substr(0, currentExpression.length - 1)
             : this.PLACEHOLDER
-
     }
 
     addDigit(currExpr, pad) {
-        console.log('Added a digit');
         return currExpr === '0' || currExpr === this.PLACEHOLDER || currExpr === this.ERROR
             ? pad
             : currExpr + pad;
     }
 
     addDecimal(currExpr, pad) {
-        return currExpr === '0' || currExpr === this.PLACEHOLDER || currExpr === this.ERROR
-            ? pad
-            : currExpr + '.';
+        if ((currExpr + pad).match(/(\D\s)?\d+\.\d*\./g))
+            return currExpr;
+        else
+            return currExpr + pad;
     }
 
     addOperator(currExpr, pad) {
-        const endsWithNaN = isNaN(currExpr.substr(currExpr.length - 1));
-        const endsWithaSpace = currExpr.substr(currExpr.length - 1) === ' ';
-        if (endsWithaSpace)
-            return currExpr.substr(0, currExpr.length - 2) + ' ' + pad + ' ';
-        else if (endsWithNaN)
-            return currExpr;
-        else
-            return currExpr + ' ' + pad + ' ';
+        const previousCharacterIsDigit = !isNaN(currExpr[currExpr.length - 1]);
+        const previousCharacter = currExpr[currExpr.length-1];
+        const secondPreviousCharacter = currExpr[currExpr.length - 2];
+        const previousCharacterIsOperator = previousCharacter === '+' || previousCharacter === '-' || previousCharacter === '×' || previousCharacter === '÷';
+        const secondPreviousIsOperator = secondPreviousCharacter === '+' || secondPreviousCharacter === '-' || secondPreviousCharacter === '×' || secondPreviousCharacter === '÷';
+        if(previousCharacterIsDigit){
+            return currExpr + pad;
+        } else if (secondPreviousIsOperator && previousCharacterIsOperator) {
+            
+            return currExpr.substring(0, currExpr.length - 2) + pad;
+        } else if(previousCharacterIsOperator && pad != '-'){
+            return currExpr.substring(0, currExpr.length - 1) + pad;
+        }
+        else {
+            return currExpr + pad;
+        }
     }
 
     addParenthesis(currExpr, pad) {
-        return currExpr + ' ' + pad + ' ';
+        const previousCharacter = currExpr[currExpr.length-1];
+        if(isNaN(previousCharacter) && currExpr.length > 0){
+            return currExpr;
+        }
+        return currExpr + pad;
     }
 
     formatExpression = (currExpr) => {
@@ -107,11 +117,22 @@ class Calculator extends Component {
     }
 
     doMath = (currExpr) => {
-        // TODO: Convert resulting large decimal numbers into exponents.
         let total = this.state.total;
         let updateExpr = this.state.expression;
+        let manyDecimals;
         currExpr = this.formatExpression(currExpr);
-        if (isNaN(currExpr[currExpr.length - 1])) {
+        try {
+            total = updateExpr = currExpr !== '' ? eval(currExpr) : '';
+            if (String(total).indexOf('.') !== -1)
+                if (String(total).split('.')[1].length > 5) manyDecimals = true;
+                else manyDecimals = false;
+
+            this.setState({
+                total: total,
+                expression: updateExpr,
+                manyDecimals: manyDecimals
+            });
+        } catch (e) {
             this.setState({
                 total: 'ERROR', expression: this.ERROR
             }, () => setTimeout(() => {
@@ -121,27 +142,19 @@ class Calculator extends Component {
                 })
             }, 1000));
             return;
-        } else {
-            total = updateExpr = currExpr !== '' ? new Function(`return ${currExpr}`)() : '';
-            if (String(total).indexOf('.') !== -1)
-                if (String(total).split('.')[1].length > 5) this.manyDecimals = true;
-                else this.manyDecimals = false;
         }
-        this.setState({
-            total: total,
-            expression: updateExpr,
-            manyDecimals: this.manyDecimals
-        });
     };
 
 
     updateExpression = pad => {
-        console.log("called", pad);
         // get current expression
-        const currExpr = String(this.state.expression);
+        let currExpr = String(this.state.expression);
         let updateExpr = '';
         // get current 
         let updateTotal = this.state.total;
+        if(currExpr === '0'){
+            currExpr = ''
+        }
         // if clear => clear state
         if (pad === 'AC') return this.clearDisplay();
         else if (pad === '↶') updateExpr = this.undo(currExpr);
@@ -163,7 +176,7 @@ class Calculator extends Component {
         return (
             <section>
                 <div className="Calculator">
-                    <Display total={this.state.total} expression={this.state.expression}
+                    <Display total={this.state.total} expression={this.state.expression} manyDecimals={this.state.manyDecimals}
                     />
                     <Brand brandName="React Calculator" />
                     <Buttons buttons={this.actions} updateExpr={this.updateExpression} />

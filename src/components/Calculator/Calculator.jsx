@@ -95,7 +95,7 @@ class Calculator extends Component {
         } else if (secondPreviousIsOperator && previousCharacterIsOperator) {
             
             return currExpr.substring(0, currExpr.length - 2) + pad;
-        } else if(previousCharacterIsOperator && pad != '-'){
+        } else if(previousCharacterIsOperator && pad !== '-'){
             return currExpr.substring(0, currExpr.length - 1) + pad;
         }
         else {

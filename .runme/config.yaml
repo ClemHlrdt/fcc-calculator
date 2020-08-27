@@ -1,0 +1,8 @@
+version: 1.0
+publish: app
+services:
+  app:
+    image: synystrose:calculator
+    ports:
+      - container: 8080
+        public: 80

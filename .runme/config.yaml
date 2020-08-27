@@ -5,4 +5,4 @@ services:
     image: synystrose:calculator
     ports:
       - container: 3000
-        public: 3000
+        public: 80

@@ -2,7 +2,9 @@ version: 1.0
 publish: app
 services:
   app:
-    image: synystrose:calculator
+    build:
+      type: dockerfile
+      config: ./.runme/Dockerfile
     ports:
       - container: 3000
         public: 80
